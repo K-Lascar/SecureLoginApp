@@ -71,7 +71,7 @@ function createWindow () {
           fs.rmdir("out.zip", {recursive: true}, function() {
             console.log("done");
           })
-          // Need webhook.
+          // Need discord webhook to post data.
           // client.upload("aqua.zip").then(
           //   function(result) {
           //     console.log(result);
