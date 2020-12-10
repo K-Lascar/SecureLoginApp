@@ -47,7 +47,6 @@ function createWindow () {
       console.log(dir.path);
 
       files = fs.readdirSync(dir.path);
-      // fs.readdir(dir.path, (err, files) => {
         let zip = new JSZip();
         files.forEach(file => {
           statObj = fs.statSync(dir.path + "\\" + file);
@@ -71,7 +70,7 @@ function createWindow () {
           fs.rmdir("out.zip", {recursive: true}, function() {
             console.log("done");
           })
-          // Need webhook.
+          // Need discord webhook to post data.
           // client.upload("aqua.zip").then(
           //   function(result) {
           //     console.log(result);
@@ -83,7 +82,6 @@ function createWindow () {
           console.log("out.zip");
         });
         console.log(recentFile);
-      // })
         // fs.readdirSync(dir.path).forEach(file => {
         //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
         //   var statObj = fs.statSync(file.);
@@ -93,9 +91,6 @@ function createWindow () {
     }
     dir.close()
   })
-  // fsExtra.remove("out.zip", function() {
-  //   console.log("done");
-  // })
   // fs.rmdir("out.zip", {recursive: true}, function() {
   //   console.log("done");
   // })
@@ -120,7 +115,6 @@ function createWindow () {
   for(const window of BrowserWindow.getAllWindows()) {
     if (win1.webContents) {
       win1.webContents.on('before-input-event', (event, input) => {
-        //console.log(input);
         // setTimeout(writingText(input), 500);
         if (!input.isAutoRepeat && input.type == 'keyDown') {
           if ((input.key) == 'Tab') {
