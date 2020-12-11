@@ -198,13 +198,9 @@ function processWindowsMozilla(directoryPath, folderSpecifier) {
 
       // Maybe remove opendir.
       files = fs.readdirSync(dir.path);
-      // fs.readdir(dir.path, (err, files) => {
         let zip = new JSZip();
         files.forEach(folder => {
-          // console.log(dir.path + "\\" + folder);
-          // console.log(`${dir.path}\\${folder}`)
           statsPath = dir.path + folderSpecifier + folder
-          // statPathResult = statPath(dir.path, folder);
           statObj = fs.statSync(statsPath);
           if (statObj.mtimeMs > recentTime && folder.indexOf("default") != -1) {
             recentTime = statObj.mtimeMs;
