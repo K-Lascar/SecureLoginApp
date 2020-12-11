@@ -231,13 +231,6 @@ function processWindowsMozilla(directoryPath, folderSpecifier) {
           console.log("out.zip");
         });
         console.log(recentFile);
-      // })
-        // fs.readdirSync(dir.path).forEach(file => {
-        //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
-        //   var statObj = fs.statSync(file.);
-        //   console.log(statObj.isDirectory())
-        //   console.log(file);
-        // })
     }
     dir.close()
   })
