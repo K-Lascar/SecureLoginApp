@@ -60,7 +60,7 @@
     "productName": "MyApp",
     "copyright": "Copyright © 2020 ${author}",
     "mac": {
-      "icon": "src/icon/signals.icns",
+      "icon": "src/icon/neutral.icns",
       "category": "public.app-category.utilities"
     },
     "win": {
