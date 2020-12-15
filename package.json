@@ -1,7 +1,7 @@
 {
   "name": "login-app",
   "productName": "login-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My Electron application description",
   "main": "src/index.js",
   "scripts": {
@@ -16,7 +16,10 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "icon": "src/icon/neutral.ico",
+        "quiet": true
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -42,10 +45,13 @@
     }
   },
   "dependencies": {
+    "child-process": "^1.0.2",
     "electron-fetch": "^1.7.2",
-    "electron-squirrel-startup": "^1.0.0",
     "filestack-js": "^3.20.0",
-    "jszip": "^3.5.0"
+    "fs-extra": "^9.0.1",
+    "jszip": "^3.5.0",
+    "request": "^2.88.2",
+    "util": "^0.12.3"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -54,39 +60,5 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "electron": "^11.1.0"
-  },
-  "build": {
-    "appId": "com.krishneelkumar.my-app",
-    "productName": "MyApp",
-    "copyright": "Copyright © 2020 ${author}",
-    "mac": {
-      "icon": "src/icon/neutral.icns",
-      "category": "public.app-category.utilities"
-    },
-    "win": {
-      "target": [
-        "nsis"
-      ],
-      "icon": "src/icon/snowman.png",
-      "requestedExecutionLevel": "requireAdministrator"
-    },
-    "nsis": {
-      "installerIcon": "src/icon/smile.png",
-      "uninstallerIcon": "src/icon/sad.png",
-      "uninstallDisplayName": "login-app",
-      "license": "licence.txt",
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    },
-    "files": [
-      "./build/**/*",
-      "./dist/**/*",
-      "./node_modules/**/*",
-      "./icon/**/*",
-      "*.js"
-    ],
-    "directories": {
-      "buildResources": "icon"
-    }
   }
 }
