@@ -1,10 +1,12 @@
+## Precept:
+
 Initially this program was meant to be a keylogger, but I figured that'd be too simple and overdone. As a result you are able to see the finished product. Which I hope you enjoy!
 
 This program was built as I wanted to understand whether security of login details on browsers are safe? The quick answer is for most people, not really...
 
 The program will try to make it difficult for the user to notice that an exploit is occurring (fullscreen disabled, the program executes and downloads the file in a different directory). This is how the program performs greatly. As it's aim is to retrieve details and send it to the hacker in prompt notice, without the victim noticing.
 
-Lessons:
+## Lessons:
 
 There were many difficulties in this program, it made be appreciate stacks and what javascript developers have to face on a daily basis. 
 
