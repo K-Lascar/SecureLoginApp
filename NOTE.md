@@ -16,7 +16,12 @@ Other users have gone beyond my project and have implemented this ability for 10
 
 What I wanted to do with my project was the ability to retrieve details and upload it remotely as if nothing happen. There was bonus features, like logging the user's IP as well, the files would also be compressed and the link would also be posted to a personal private discord server.
 
-Understanding the uniqueness of node js, was mixed bag of wonders, there were many interesting things I observed like how fs package including many functionalities in c posix spawn libraries, referencing sys/stat.h https://en.wikibooks.org/wiki/C_Programming/POSIX_Reference/sys/stat.h. It was very interesting to understand asynchronous and synchronous functionality worked, and how we can include async and await to add to our programs.   
+Understanding the uniqueness of node js was mixed bag of wonders, there were many interesting things I observed like how fs package including many functionalities in c posix spawn libraries, referencing sys/stat.h https://en.wikibooks.org/wiki/C_Programming/POSIX_Reference/sys/stat.h. It was very interesting to understand asynchronous and synchronous functionality worked, and how we can include async and await to add to our programs.   
 
 Many difficulties, with implementation especially testing on different Operating Systems, seeing how they function and what breaks with the same code. 
+
+## Overall:
+I learnt a tremendous amount and value from the community. Understanding how passwords are encrypted was very intriguing.
+
+Thanks for reading and Happy Coding!!!
 
