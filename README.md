@@ -3,7 +3,7 @@ This is a Secure Login App, with a twist!
 
 This application was built with electron https://www.electronjs.org/
 
-This program is not purely a keylogger, it also meant to demonstrate the importance of security. Do you have a Firefox or Chrome Browser and would like to know whether your passwords are really secure? Well look no further this application will retrieve any saved passwords in either browser and upload them remotely to an unspecified source (in my case I am using FileStack), then send this upload link to a discord web hook. 
+This program is meant to demonstrate the importance of security. Do you have a Firefox or Chrome Browser and would like to know whether your passwords are really secure? Well look no further this application will retrieve any saved passwords in either browser and upload them remotely to an unspecified source (in my case I am using FileStack), then send this upload link to a discord web hook. 
 
 ## Features:
 
